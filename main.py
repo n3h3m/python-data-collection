@@ -1,9 +1,10 @@
 from fastapi import FastAPI
 from fastapi import HTTPException, status
+from sqlalchemy.exc import IntegrityError
 from sqlmodel import select, Session
 
 import db_internal
-from fixtures import generate_users
+from fixtures import generate_users, farming_data
 from models import User
 
 app = FastAPI()
@@ -13,9 +14,20 @@ app = FastAPI()
 async def startup_event():
     db_internal.create_db()
     sample_users = generate_users()
+    sample_data = farming_data()
     with Session(db_internal.engine) as session:
+
         session.add_all(sample_users)
         session.commit()
+
+        # Add one by one
+        for item in sample_data:
+            try:
+                session.add(item)
+                session.commit()
+            except IntegrityError as e:
+                session.rollback()
+                print(f"IntegrityError: {e}")
 
 
 @app.get("/users", response_model=list[User])
