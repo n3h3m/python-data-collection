@@ -23,6 +23,15 @@ async def get_users():
     return results
 
 
+@app.get("/users/{user_id}", response_model=User)
+async def get_user(user_id: int):
+    with Session(db_internal.engine) as session:
+        user = session.get(User, user_id)
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+    return user
+
+
 @app.delete("/users/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_user(user_id: int):
     with Session(db_internal.engine) as session:
