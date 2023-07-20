@@ -1,7 +1,9 @@
-from fastapi import FastAPI, HTTPException, status
+from fastapi import FastAPI
+from fastapi import HTTPException, status
 from sqlmodel import select, Session
 
 import db_internal
+from fixtures import generate_users
 from models import User
 
 app = FastAPI()
@@ -10,6 +12,10 @@ app = FastAPI()
 @app.on_event("startup")
 async def startup_event():
     db_internal.create_db()
+    sample_users = generate_users()
+    with Session(db_internal.engine) as session:
+        session.add_all(sample_users)
+        session.commit()
 
 
 @app.get("/users", response_model=list[User])
