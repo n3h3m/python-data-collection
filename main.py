@@ -4,7 +4,8 @@ from sqlmodel import Session
 
 import db_internal
 from fixtures import generate_users, farming_data
-from routers import user, farmer, crop, activity
+from models import User, Farmer, Crop, Activity
+from routers.generic_router import crud
 
 app = FastAPI()
 
@@ -29,7 +30,7 @@ async def startup_event():
                 print(f"IntegrityError: {e}")
 
 
-app.include_router(user.router, prefix="/users", tags=["Users"])
-app.include_router(farmer.router, prefix="/farmers", tags=["Farmers"])
-app.include_router(crop.router, prefix="/crops", tags=["Crops"])
-app.include_router(activity.router, prefix="/activities", tags=["Activities"])
+app.include_router(crud(User), prefix="/users", tags=["Users"])
+app.include_router(crud(Farmer), prefix="/farmers", tags=["Farmers"])
+app.include_router(crud(Crop), prefix="/crops", tags=["Crops"])
+app.include_router(crud(Activity), prefix="/activities", tags=["Activities"])
