@@ -2,6 +2,8 @@ from fastapi import status
 from fastapi.testclient import TestClient
 
 from main import app
+from models import User
+from utils import truncate_table
 
 
 def create_user(client) -> dict:
@@ -23,12 +25,14 @@ def delete_user(client, user_id: int):
 
 def test_crud_users():
     with TestClient(app) as client:
-        # expect nothing in fresh db
+        truncate_table(User.__table__)
         response = get_all_users(client)
         assert len(response) == 0
+
         # create an entry
         response = create_user(client)
         user_id = response["id"]
+
         # get entry
         response = get_all_users(client)
         assert len(response) == 1
