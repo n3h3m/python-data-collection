@@ -1,10 +1,9 @@
 from fastapi import FastAPI
-from sqlalchemy.exc import IntegrityError
 from sqlmodel import Session
 
 import db_internal
-from fixtures import generate_users, farming_data
-from models import User, Farmer, Crop, Activity
+from fixtures import fixtures_data
+from models import Farmer, Crop, Activity, Contractor, Farm
 from routers.generic_router import crud
 
 app = FastAPI()
@@ -13,24 +12,18 @@ app = FastAPI()
 @app.on_event("startup")
 async def startup_event():
     db_internal.create_db()
-    sample_users = generate_users()
-    sample_data = farming_data()
     with Session(db_internal.engine) as session:
+        for model_name, data in fixtures_data.items():
+            model_cls = globals()[model_name]
+            for entry_data in data:
+                entry = model_cls(**entry_data)
+                session.add(entry)
 
-        session.add_all(sample_users)
         session.commit()
 
-        # Add one by one
-        for item in sample_data:
-            try:
-                session.add(item)
-                session.commit()
-            except IntegrityError as e:
-                session.rollback()
-                print(f"IntegrityError: {e}")
 
-
-app.include_router(crud(User), prefix="/users", tags=["Users"])
 app.include_router(crud(Farmer), prefix="/farmers", tags=["Farmers"])
+app.include_router(crud(Farm), prefix="/farms", tags=["Farms"])
+app.include_router(crud(Contractor), prefix="/contractors", tags=["Contractors"])
 app.include_router(crud(Crop), prefix="/crops", tags=["Crops"])
 app.include_router(crud(Activity), prefix="/activities", tags=["Activities"])
