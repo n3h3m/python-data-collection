@@ -2,15 +2,17 @@ from datetime import datetime
 from enum import Enum
 from typing import Optional
 
+from pydantic import constr, condecimal, validator
 from sqlmodel import SQLModel, Field
 
 
 # Enum for different types of farming activities
 class ActivityType(str, Enum):
-    planting = "planting"
-    watering = "watering"
-    fertilizing = "fertilizing"
-    harvesting = "harvesting"
+    planting = "Planting"
+    irrigation = "Irrigation"
+    fertilizing = "Fertilizing"
+    harvesting = "Harvesting"
+    tilling = "Tilling"
 
 
 # Enum for different seasons
@@ -78,5 +80,17 @@ class Activity(SQLModel, table=True):
     farmer_id: int = Field(foreign_key="farmer.id")
     farm_id: int = Field(foreign_key="farm.id")
     contractor_id: Optional[int] = Field(default=None, foreign_key="contractor.id")
+    tillage_type: constr(regex="^(plowing|harrowing|conventional|reduced)$") = None
+    till_depth: condecimal(ge=0, lt=10, decimal_places=1) = None
     date_time: datetime
     notes: Optional[str]
+
+    @validator('tillage_type', 'till_depth', pre=True, always=True)
+    def check_tilling_fields(cls, value, values):
+        if values.get('activity_type') == 'Tilling':
+            if value is None:
+                raise ValueError("tillage_type and till_depth are mandatory for activity_type 'Tilling'")
+        return value
+
+    class Config:
+        orm_mode = True

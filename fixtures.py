@@ -196,7 +196,7 @@ activity_data = []
 
 for _ in range(50):
     activity = {
-        "activity_type": choice(["planting", "watering", "fertilizing", "harvesting"]),
+        "activity_type": choice(["Planting", "Irrigation", "Fertilizing", "Harvesting"]),
         "crop_id": choice(range(1, len(crop_data) + 1)),
         "farmer_id": choice(range(1, len(farmer_data) + 1)),
         "farm_id": choice(range(1, len(farm_data) + 1)),
