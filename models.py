@@ -27,10 +27,10 @@ class Season(str, Enum):
 
 # Enum for different tilling types
 class TillingType(str, Enum):
-    plowing = "plowing"
-    harrowing = "harrowing"
-    conventional = "conventional"
-    reduced = "reduced"
+    plowing = "Plowing"
+    harrowing = "Harrowing"
+    conventional = "Conventional"
+    reduced = "Reduced"
 
 
 # Contractor model to represent external contractors
@@ -80,16 +80,16 @@ class Activity(SQLModel, table=True):
     farmer_id: int = Field(foreign_key="farmer.id")
     farm_id: int = Field(foreign_key="farm.id")
     contractor_id: Optional[int] = Field(default=None, foreign_key="contractor.id")
-    tillage_type: constr(regex="^(plowing|harrowing|conventional|reduced)$") = None
+    till_type: constr(regex="^(Plowing|Harrowing|Conventional|Reduced)$") = None
     till_depth: condecimal(ge=0, lt=10, decimal_places=1) = None
     date_time: datetime
     notes: Optional[str]
 
-    @validator('tillage_type', 'till_depth', pre=True, always=True)
+    @validator('till_type', 'till_depth', pre=True, always=True)
     def check_tilling_fields(cls, value, values):
         if values.get('activity_type') == 'Tilling':
             if value is None:
-                raise ValueError("tillage_type and till_depth are mandatory for activity_type 'Tilling'")
+                raise ValueError("till_type and till_depth are mandatory for activity_type 'Tilling'")
         return value
 
     class Config:
