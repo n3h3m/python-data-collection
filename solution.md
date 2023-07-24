@@ -98,7 +98,7 @@ Imagine the times we need to track more moving parts.
 - Fertilization:
     - fertilizer type: (e.g., organic, inorganic)
     - quantity used
-    - bran
+    - brand
 
 - Pest control:
     - pesticide type
@@ -164,5 +164,7 @@ In our specific question, the objective is to ask the user to enter a 4-digit ye
 
 ## Tasks completed. 
 - Exposed APIs for the models Farmer, Farm, Activity, Crops
-- Implemented a generic CRUD component to avoid code duplication 
+- Implemented a generic CRUD component and used the same to generate CRUD endpoints for all the models to avoid code duplication Ref. [`routers/generic_router.py`](routers/generic_router.py)
 - Added sample dada under `fixures.py` to bring the project up faster and explore via swagger.
+- Added `pydantic` validator for Tilling related constraints, [Try here](http://0.0.0.0:8000/docs#/Activities/create_item_activities__post)
+- General unittests and detailed tests for Activity model
