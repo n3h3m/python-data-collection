@@ -6,7 +6,7 @@ generate_requirements_txt:
 
 test:
 	rm -f test.db
-	db_path="test.db" pytest -x -vv
+	db_path="test.db" pytest -x -vv --pdb
 
 install:
 	pipenv install --dev
