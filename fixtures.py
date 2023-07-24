@@ -199,6 +199,7 @@ for _ in range(50):
         "activity_type": choice(["planting", "watering", "fertilizing", "harvesting"]),
         "crop_id": choice(range(1, len(crop_data) + 1)),
         "farmer_id": choice(range(1, len(farmer_data) + 1)),
+        "farm_id": choice(range(1, len(farm_data) + 1)),
         "contractor_id": choice(range(1, len(contractor_data) + 1)),
         "date_time": datetime(2023, 7, choice(range(1, 31)), choice(range(0, 24)), choice(range(0, 60))),
         "notes": "Random activity notes.",

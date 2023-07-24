@@ -76,6 +76,7 @@ class Activity(SQLModel, table=True):
     activity_type: ActivityType
     crop_id: int = Field(foreign_key="crop.id")
     farmer_id: int = Field(foreign_key="farmer.id")
+    farm_id: int = Field(foreign_key="farm.id")
     contractor_id: Optional[int] = Field(default=None, foreign_key="contractor.id")
     date_time: datetime
     notes: Optional[str]
